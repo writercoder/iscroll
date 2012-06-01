@@ -131,14 +131,16 @@ var m = Math,
 
 			// Events
 			onRefresh: null,
+
 			onBeforeScrollStart: function (e) { 
 
 				if (e.preventDefault) {
-					e.preventDefault();
+					if(!hasTouch) {
+						e.preventDefault();
+					}
 				} else {
 					e.returnValue = false;
 				}
-				 
 			},
 			onScrollStart: null,
 			onBeforeScrollMove: null,
@@ -449,6 +451,7 @@ iScroll.prototype = {
 
 		// Zoom
 		if (that.options.zoom && hasTouch && e.touches.length > 1) {
+			e.preventDefault();
 			c1 = m.abs(e.touches[0].pageX - e.touches[1].pageX);
 			c2 = m.abs(e.touches[0].pageY - e.touches[1].pageY);
 			that.touchesDist = m.sqrt(c1*c1+c2*c2);
@@ -502,8 +505,16 @@ iScroll.prototype = {
 			}
 		}
 
+		var oldX = that.x;
+		var oldY = that.y;
+
 		that.moved = true;
 		that._pos(newX, newY);
+
+		if(hasTouch && (that.x != oldX || that.y != oldY)) {
+			e.preventDefault();
+		}
+
 		that.dirX = deltaX > 0 ? -1 : deltaX < 0 ? 1 : 0;
 		that.dirY = deltaY > 0 ? -1 : deltaY < 0 ? 1 : 0;
 
