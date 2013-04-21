@@ -785,7 +785,11 @@ iScroll.prototype = {
 			}
 
 			now = (now - startTime) / step.time - 1;
-			easeOut = m.sqrt(1 - now * now);
+			if(that.linear) {
+				easeOut = 1 + now;
+			} else {
+				easeOut = m.sqrt(1 - now * now);
+			}
 			newX = (step.x - startX) * easeOut + startX;
 			newY = (step.y - startY) * easeOut + startY;
 			that._pos(newX, newY);
